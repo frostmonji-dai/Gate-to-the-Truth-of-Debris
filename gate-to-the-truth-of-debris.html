@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gate to the truth of Debris — NASA's Abandoned Rovers</title>
+<meta name="description" content="An interactive storytelling tribute to the rovers NASA left behind on the Moon and Mars — for the 2026 NASA Space Apps Challenge.">
+<style>
+/* ============================================================
+   Gate to the truth of Debris — style.css
+   ============================================================ */
+:root {
+  --bg: #0e0906;
+  --bg-2: #17100a;
+  --panel: #1b140e;
+  --panel-2: #241a10;
+  --ink: #ece1d0;
+  --ink-dim: #a8998a;
+  --accent: #ff7a3d;        /* Mars sunset orange */
+  --accent-2: #ffbf86;
+  --moon: #d9d2c6;
+  --line: #322618;
+  --serif: Georgia, "Palatino Linotype", "Book Antiqua", "Times New Roman", serif;
+  --gold: #d9a55c;
+  --radius: 14px;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: auto; }
+section[id], header[id] { scroll-margin-top: 72px; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+#starfield {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% -20%, #2b1a0e 0%, var(--bg) 60%);
+}
+
+/* warm candle-like selection + scrollbar */
+::selection { background: rgba(255, 122, 61, 0.35); color: #fff4e6; }
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #4a3826; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #63492f; }
+
+a { color: var(--accent-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- Nav ---------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem clamp(1rem, 4vw, 3rem);
+  background: rgba(14, 9, 6, 0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+}
+.brand:hover { text-decoration: none; }
+.brand-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: 0.35; } }
+.nav-links { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+.nav-links a {
+  color: var(--ink-dim);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.nav-links a:hover { color: var(--accent-2); text-decoration: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5rem 1.5rem 9rem;
+  overflow: hidden;
+}
+/* warm sunset glow over the whole hero */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 108%, rgba(255, 140, 66, 0.30), transparent 62%),
+    radial-gradient(ellipse 45% 38% at 50% 30%, rgba(255, 176, 105, 0.08), transparent 70%);
+}
+.hero-inner { max-width: 880px; position: relative; z-index: 2; }
+.hero-eyebrow {
+  color: var(--accent-2);
+  font-size: 0.82rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  line-height: 1.12;
+  font-weight: 800;
+  margin-bottom: 1.3rem;
+}
+.hero h1 .accent {
+  color: var(--accent);
+  text-shadow: 0 0 40px rgba(255, 106, 61, 0.45);
+}
+.hero-sub {
+  color: var(--ink-dim);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  max-width: 640px;
+  margin: 0 auto 2.4rem;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.2rem, 5vw, 3.5rem);
+  margin-bottom: 2.6rem;
+  flex-wrap: wrap;
+}
+.stat { display: flex; flex-direction: column; }
+.stat-num {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: var(--ink);
+}
+.stat-label {
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.hero-cta {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent-2);
+  font-weight: 600;
+  transition: background 0.25s, transform 0.25s;
+}
+.hero-cta:hover {
+  background: rgba(255, 106, 61, 0.12);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.hero-horizon {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 200px;
+  pointer-events: none;
+}
+.hero-horizon svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- Sections ---------- */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem;
+}
+.section-title {
+  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+.section-title .accent { color: var(--accent); }
+.section-sub {
+  color: var(--ink-dim);
+  margin-bottom: 2.4rem;
+  max-width: 640px;
+}
+
+/* ---------- Timeline ---------- */
+.timeline {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 1.6rem 0.4rem 1.4rem;
+  scroll-snap-type: x mandatory;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--line) 8%, var(--line) 92%, transparent);
+}
+.tl-item {
+  scroll-snap-align: center;
+  flex: 0 0 auto;
+  width: 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius);
+  transition: background 0.2s, transform 0.2s;
+}
+.tl-item:hover { background: var(--panel); transform: translateY(-3px); }
+.tl-year {
+  font-size: 0.78rem;
+  color: var(--accent-2);
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  margin-bottom: 0.55rem;
+  position: relative;
+  z-index: 2;
+}
+.tl-icon {
+  font-size: 1.9rem;
+  margin-bottom: 0.3rem;
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  padding: 0 0.5rem;
+}
+.tl-name { font-weight: 700; font-size: 0.95rem; }
+.tl-note { color: var(--ink-dim); font-size: 0.76rem; }
+
+/* ---------- Rover cards (storybook deck) ---------- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 1.5rem;
+}
+.card {
+  position: relative;
+  perspective: 1200px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+  font: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  opacity: 0;
+  transform: translateY(30px) rotate(1.6deg);
+  transition: opacity 0.7s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.card.in { opacity: 1; transform: translateY(0) rotate(0); }
+.card:hover { transform: translateY(-6px); }
+.card-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.25, 0.8, 0.25, 1);
+  min-height: 360px;
+}
+.card.flipped .card-inner { transform: rotateY(180deg); }
+.card-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.5rem 1.5rem 1.3rem;
+  background: linear-gradient(160deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.card-front { position: relative; gap: 0.8rem; }
+.card-back {
+  transform: rotateY(180deg);
+  overflow-y: auto;
+  border-color: color-mix(in srgb, var(--planet, var(--accent)) 40%, var(--line));
+  background: linear-gradient(200deg, var(--panel-2), var(--panel));
+}
+.card:hover .card-face {
+  border-color: color-mix(in srgb, var(--planet, var(--accent)) 45%, var(--line));
+  box-shadow: 0 22px 44px -20px color-mix(in srgb, var(--planet, var(--accent)) 40%, transparent);
+}
+.card-ch {
+  font: 700 0.68rem system-ui, sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.card-nick {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+}
+.card-hint {
+  margin-top: auto;
+  color: var(--ink-dim);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.card:hover .card-hint, .card:focus-visible .card-hint { color: var(--accent-2); }
+.card-back-epi {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--accent-2);
+  border-left: 3px solid var(--planet, var(--accent));
+  padding-left: 0.8rem;
+}
+.card-back-text {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink);
+  opacity: 0.92;
+}
+.card-back-rest {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  margin-top: auto;
+}
+.card-back-rest strong { color: var(--ink); font-weight: 600; }
+.card-open {
+  margin-top: 0.6rem;
+  align-self: flex-start;
+  background: color-mix(in srgb, var(--planet, var(--accent)) 18%, var(--bg-2));
+  color: var(--accent-2);
+  border: 1px solid color-mix(in srgb, var(--planet, var(--accent)) 45%, transparent);
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  font: 600 0.82rem system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.card-open:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--planet, var(--accent)) 30%, var(--bg-2)); }
+
+.card-top { display: flex; align-items: center; gap: 0.9rem; }
+.card-art {
+  width: 58px; height: 58px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  font-size: 1.7rem;
+  background: color-mix(in srgb, var(--planet, var(--accent)) 16%, var(--bg-2));
+  border: 1px solid color-mix(in srgb, var(--planet, var(--accent)) 40%, var(--line));
+}
+.card-id { display: flex; flex-direction: column; gap: 0.1rem; }
+.card h3 { font-size: 1.25rem; font-weight: 800; font-family: var(--serif); }
+.card-tag {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  z-index: 2;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--planet, var(--accent)) 18%, var(--bg-2));
+  color: color-mix(in srgb, var(--planet, var(--accent)) 85%, white);
+  border: 1px solid color-mix(in srgb, var(--planet, var(--accent)) 45%, transparent);
+}
+.card-quote {
+  color: var(--ink-dim);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  border-left: 2px solid color-mix(in srgb, var(--planet, var(--accent)) 60%, transparent);
+  padding-left: 0.7rem;
+}
+.card-facts { display: flex; gap: 1rem; flex-wrap: wrap; }
+.card-fact { display: flex; flex-direction: column; }
+.card-fact b { font-size: 1rem; }
+.card-fact span {
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ---------- Resting places ---------- */
+.resting-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.resting-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+.resting-pin {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 8px var(--planet, var(--accent)));
+}
+.resting-card h4 { font-size: 1rem; }
+.resting-card p { color: var(--ink-dim); font-size: 0.84rem; }
+.resting-coords {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--accent-2);
+  margin-top: 0.25rem;
+}
+
+/* ---------- Still alive ---------- */
+.alive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+}
+.alive-card {
+  background: linear-gradient(160deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+}
+.alive-flag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--c);
+  border: 1px solid var(--c);
+  border-radius: 999px;
+  padding: 0.18rem 0.65rem;
+  margin-bottom: 0.8rem;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+.alive-card h3 { margin-bottom: 0.15rem; }
+.alive-meta { color: var(--ink-dim); font-size: 0.85rem; margin-bottom: 0.7rem; }
+.alive-card p:last-child { color: var(--ink-dim); font-size: 0.92rem; }
+
+/* ---------- Epilogue ---------- */
+.epilogue { text-align: center; }
+.big-quote {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.3;
+  max-width: 780px;
+  margin: 0 auto 1rem;
+  color: #f6e7cd;
+  text-shadow: 0 0 50px rgba(255, 150, 80, 0.25);
+}
+.big-quote footer {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--ink-dim);
+  margin-top: 1rem;
+}
+.quote-note { display: block; font-size: 0.75rem; margin-top: 0.2rem; opacity: 0.8; }
+.epilogue-text {
+  color: var(--ink-dim);
+  max-width: 680px;
+  margin: 1.4rem auto 0;
+}
+.epilogue-text:last-of-type { color: var(--ink); font-weight: 600; }
+
+/* ---------- Footer ---------- */
+.footer {
+  border-top: 1px solid var(--line);
+  padding: 2.2rem 1.5rem 3rem;
+  text-align: center;
+  color: var(--ink-dim);
+  font-size: 0.88rem;
+}
+.footer-sources { font-size: 0.76rem; margin-top: 0.5rem; opacity: 0.75; }
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(4, 5, 9, 0.78);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4vh 1rem;
+  overflow-y: auto;
+}
+.modal-backdrop[hidden] { display: none; }
+.modal {
+  position: relative;
+  width: min(820px, 100%);
+  background: linear-gradient(170deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: clamp(1.6rem, 4vw, 2.8rem);
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+.modal-close {
+  position: absolute;
+  top: 0.9rem; right: 1rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: var(--accent); color: #fff; }
+
+.m-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--planet, var(--accent)) 80%, white);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.m-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+.m-tagline { color: var(--ink-dim); font-size: 1.05rem; margin-bottom: 1.6rem; }
+.m-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.8rem;
+}
+.m-stat {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+}
+.m-stat b {
+  display: block;
+  font-size: 1.2rem;
+  color: var(--accent-2);
+}
+.m-stat span {
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+.m-section-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent-2);
+  margin: 1.8rem 0 0.7rem;
+  font-weight: 700;
+}
+.m-story p { margin-bottom: 0.9rem; color: var(--ink); font-size: 0.98rem; }
+.m-science p { color: var(--ink-dim); font-size: 0.95rem; }
+.m-epitaph {
+  margin-top: 1.8rem;
+  padding: 1.1rem 1.4rem;
+  border-left: 3px solid var(--planet, var(--accent));
+  background: color-mix(in srgb, var(--planet, var(--accent)) 8%, var(--bg-2));
+  border-radius: 0 10px 10px 0;
+  font-style: italic;
+  font-size: 1rem;
+}
+.m-epitaph .who {
+  display: block;
+  font-style: normal;
+  font-size: 0.75rem;
+  color: var(--ink-dim);
+  margin-top: 0.4rem;
+  letter-spacing: 0.08em;
+}
+.m-resting {
+  margin-top: 1.6rem;
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+.m-resting code {
+  font-family: ui-monospace, Consolas, monospace;
+  color: var(--accent-2);
+  font-size: 0.8rem;
+}
+
+/* ---------- Paper maps ---------- */
+.maps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr));
+  gap: 2.4rem;
+}
+.map-card {
+  background: linear-gradient(160deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+}
+.map-head { margin-bottom: 1rem; }
+.map-head h3 { font-size: 1.15rem; font-weight: 800; }
+.map-head p { color: var(--ink-dim); font-size: 0.85rem; }
+.map-frame {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #b39b72;
+  box-shadow: 0 16px 34px -16px rgba(0, 0, 0, 0.65);
+  transform: rotate(-0.6deg);
+}
+.map-card.mars .map-frame { transform: rotate(0.5deg); }
+.map-frame svg { display: block; width: 100%; height: auto; }
+svg text { font-family: "Segoe UI", system-ui, sans-serif; }
+
+.mp-title { font-size: 34px; font-weight: 800; fill: #4a3b28; letter-spacing: 6px; }
+.mp-sub { font-size: 13px; font-weight: 600; fill: #6b5a40; letter-spacing: 3px; }
+.mp-grid line { stroke: #8a7455; stroke-width: 0.7; opacity: 0.35; }
+.mp-grid-label { font-size: 10px; fill: #6b5a40; opacity: 0.75; letter-spacing: 1px; }
+.mp-mare { fill: #cbb894; opacity: 0.8; }
+.mp-mare-label text { font-size: 10px; fill: #6b5a40; opacity: 0.55; letter-spacing: 2px; font-weight: 600; }
+.mp-crater { fill: none; stroke: #8a7455; stroke-width: 1.1; opacity: 0.55; }
+.mp-canyon { fill: none; stroke: #6e4f33; stroke-width: 7; opacity: 0.45; stroke-linecap: round; }
+.mp-basin { fill: #e6d2a8; opacity: 0.9; }
+.mp-volcano circle { fill: #d8b48b; stroke: #8a6a44; stroke-width: 1.2; opacity: 0.85; }
+.mp-volcano .mp-caldera { fill: #a3714a; }
+.mp-cap { fill: #f7f0e0; opacity: 0.85; }
+.mp-fold { stroke: #6e5a3e; stroke-width: 3; opacity: 0.1; }
+.mp-stain { fill: none; stroke: #8a6a3a; stroke-width: 7; opacity: 0.16; }
+.mp-compass circle { fill: none; stroke: #7a6547; stroke-width: 1.4; opacity: 0.6; }
+.mp-compass path { fill: #a04b3a; opacity: 0.7; }
+.mp-compass text { font-size: 12px; fill: #6b5a40; font-weight: 700; }
+.mp-stamp circle { fill: none; stroke: #a04b3a; stroke-width: 2.5; opacity: 0.55; }
+.mp-stamp text { font-size: 13px; font-weight: 700; fill: #a04b3a; opacity: 0.75; letter-spacing: 1px; }
+
+.map-pin { cursor: pointer; transform-box: fill-box; transform-origin: center bottom; transition: transform 0.18s ease; outline: none; }
+.map-pin:hover, .map-pin:focus-visible { transform: scale(1.28); }
+.pin-rover { fill: #b3402a; stroke: #5f2013; stroke-width: 1; }
+.pin-active { fill: #4e7a3a; stroke: #2c4720; stroke-width: 1; }
+.pin-other { fill: #77694d; stroke: #3f382a; stroke-width: 1; }
+.pin-label { opacity: 0; transition: opacity 0.18s; pointer-events: none; }
+.map-pin:hover .pin-label, .map-pin:focus-visible .pin-label { opacity: 1; }
+.pin-label rect { fill: #f3ead6; stroke: #8a7455; stroke-width: 0.8; }
+.pin-label text { font-size: 10.5px; font-weight: 700; fill: #4a3b28; }
+
+.map-legend {
+  display: flex;
+  gap: 1.3rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  align-items: center;
+}
+.map-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.legend-pin {
+  width: 10px; height: 10px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: inline-block;
+}
+
+/* ---------- Storybook touches ---------- */
+.hero h1, .section-title, .m-title, .big-quote, .silence-title {
+  font-family: var(--serif);
+}
+.hero-byline {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-dim);
+  font-size: 1.05rem;
+  margin: -0.4rem auto 2rem;
+  max-width: 560px;
+}
+.m-story p { font-family: var(--serif); font-size: 1.02rem; line-height: 1.85; }
+.m-tagline { font-family: var(--serif); font-style: italic; }
+.m-epitaph { font-family: var(--serif); line-height: 1.7; }
+.epilogue-text { font-family: var(--serif); font-size: 1.05rem; line-height: 1.85; }
+.alive-card h3, .resting-card h4 { font-family: var(--serif); }
+
+/* drop cap — opens each chronicle like a book page */
+.m-story > p:first-child::first-letter {
+  float: left;
+  font-family: var(--serif);
+  font-size: 3.6rem;
+  font-weight: 700;
+  line-height: 0.8;
+  padding: 8px 10px 0 0;
+  color: var(--accent);
+  text-shadow: 0 0 24px rgba(255, 122, 61, 0.35);
+}
+
+/* chapter kickers */
+.kicker {
+  font: 700 0.72rem system-ui, sans-serif;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.45rem;
+}
+
+/* scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* entrance animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-inner > * { animation: fadeUp 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hero-inner > *:nth-child(1) { animation-delay: 0.05s; }
+.hero-inner > *:nth-child(2) { animation-delay: 0.18s; }
+.hero-inner > *:nth-child(3) { animation-delay: 0.31s; }
+.hero-inner > *:nth-child(4) { animation-delay: 0.44s; }
+.hero-inner > *:nth-child(5) { animation-delay: 0.57s; }
+.hero-inner > *:nth-child(6) { animation-delay: 0.70s; }
+
+/* modal content rises page by page */
+#modal-body > * { animation: fadeUp 0.65s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+#modal-body > *:nth-child(2) { animation-delay: 0.06s; }
+#modal-body > *:nth-child(3) { animation-delay: 0.12s; }
+#modal-body > *:nth-child(4) { animation-delay: 0.18s; }
+#modal-body > *:nth-child(5) { animation-delay: 0.24s; }
+#modal-body > *:nth-child(6) { animation-delay: 0.30s; }
+#modal-body > *:nth-child(7) { animation-delay: 0.36s; }
+#modal-body > *:nth-child(8) { animation-delay: 0.42s; }
+#modal-body > *:nth-child(9) { animation-delay: 0.48s; }
+#modal-body > *:nth-child(10) { animation-delay: 0.54s; }
+
+/* the hero sun breathes */
+.hero-sun {
+  animation: sunPulse 6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes sunPulse { 50% { opacity: 0.62; } }
+
+/* ---------- The Long Silence (live timers) ---------- */
+.silence { margin-top: 3.2rem; }
+.silence-title { font-size: 1.35rem; margin-bottom: 0.1rem; }
+.silence-sub {
+  color: var(--ink-dim);
+  font-size: 0.9rem;
+  font-family: var(--serif);
+  font-style: italic;
+}
+.silence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+.silence-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem;
+  text-align: center;
+  transition: border-color 0.25s, transform 0.25s;
+}
+.silence-card:hover { transform: translateY(-3px); border-color: #4a3826; }
+.silence-name { font-weight: 700; font-family: var(--serif); }
+.silence-since {
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 0.15rem;
+}
+.silence-clock {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.02rem;
+  color: var(--accent-2);
+  margin: 0.55rem 0 0.3rem;
+}
+.silence-note { color: var(--ink-dim); font-size: 0.76rem; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .nav-links { gap: 0.8rem; }
+  .nav-links a { font-size: 0.75rem; }
+  .hero { min-height: 78vh; }
+}
+
+
+/* ============================================================
+   v2 — refined nav, animated cards, photos, ripples
+   ============================================================ */
+.progress {
+  position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 70;
+  transform-origin: 0 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px rgba(255,122,61,.6);
+  pointer-events: none;
+}
+.nav { transition: padding .3s ease, box-shadow .3s ease, background .3s ease; }
+.nav.scrolled { padding-top: .5rem; padding-bottom: .5rem; box-shadow: 0 12px 30px -18px rgba(0,0,0,.8); background: rgba(14,9,6,.92); }
+.brand { min-width: 0; }
+.brand-text { overflow: hidden; text-overflow: ellipsis; font-family: var(--serif); letter-spacing: .03em; }
+.nav-links {
+  gap: .3rem; flex-wrap: nowrap; padding: .28rem;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(27,20,14,.75);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+.nav-links a {
+  position: relative; overflow: hidden; white-space: nowrap;
+  padding: .45rem 1rem; border-radius: 999px;
+  color: var(--ink-dim); font-size: .74rem; font-weight: 700; letter-spacing: .1em;
+  transition: color .25s ease, background .3s ease, transform .2s ease, box-shadow .3s ease;
+}
+.nav-links a:hover { color: var(--ink); background: rgba(255,122,61,.12); transform: translateY(-1px); text-decoration: none; }
+.nav-links a:active { transform: scale(.93); }
+.nav-links a.active {
+  color: #1c0f06;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+  box-shadow: 0 6px 18px -8px var(--accent);
+}
+@media (max-width: 900px) {
+  .nav { flex-direction: column; align-items: stretch; gap: .55rem; }
+  .brand { justify-content: center; }
+  .nav-links { overflow-x: auto; scrollbar-width: none; justify-content: flex-start; }
+  .nav-links::-webkit-scrollbar { display: none; }
+}
+
+/* hero button */
+.hero-inner > * { animation-fill-mode: backwards; }
+.hero-cta {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: .7rem;
+  padding: .95rem 2.3rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255,122,61,.24), rgba(255,122,61,.06));
+  color: #fff0dd; font-weight: 700; letter-spacing: .05em; cursor: pointer;
+  box-shadow: 0 10px 30px -12px rgba(255,122,61,.55), inset 0 1px 0 rgba(255,255,255,.12);
+  transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s ease, background .3s ease;
+}
+.hero-cta::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,235,210,.3) 50%, transparent 70%);
+  transform: translateX(-130%); transition: transform .9s ease;
+}
+.hero-cta:hover { transform: translateY(-3px); background: linear-gradient(135deg, rgba(255,122,61,.4), rgba(255,122,61,.12)); box-shadow: 0 18px 40px -12px rgba(255,122,61,.75), inset 0 1px 0 rgba(255,255,255,.18); text-decoration: none; }
+.hero-cta:hover::before { transform: translateX(130%); }
+.hero-cta:active { transform: translateY(0) scale(.95); }
+.hero-cta .arrow { display: inline-block; animation: nudge 1.8s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateY(5px); } }
+.hero h1 .accent { animation: glowPulse 4s ease-in-out infinite; }
+@keyframes glowPulse { 50% { text-shadow: 0 0 64px rgba(255,106,61,.75); } }
+.stat { transition: transform .3s ease; }
+.stat:hover { transform: translateY(-4px) scale(1.05); }
+
+/* ripple + press feedback */
+.tl-item, .card-open { position: relative; overflow: hidden; }
+.modal-close { overflow: hidden; transition: background .2s, transform .35s cubic-bezier(.2,.7,.2,1); }
+.modal-close:hover { transform: rotate(90deg) scale(1.08); }
+.modal-close:active { transform: rotate(90deg) scale(.9); }
+.ripple {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  background: rgba(255,225,190,.5); transform: scale(0);
+  animation: rippleOut .7s ease-out forwards;
+}
+@keyframes rippleOut { to { transform: scale(1); opacity: 0; } }
+.tl-item:active { transform: scale(.96); }
+.tl-item:hover .tl-icon { animation: bob .6s ease; }
+@keyframes bob { 30% { transform: translateY(-8px) rotate(-6deg); } 60% { transform: translateY(2px) rotate(4deg); } }
+.resting-card, .alive-card { cursor: default; }
+.resting-card { cursor: pointer; }
+.resting-card.reveal.in, .alive-card.reveal.in {
+  transition: opacity .8s ease, transform .35s cubic-bezier(.2,.7,.2,1), border-color .3s, box-shadow .3s;
+}
+.resting-card.reveal.in:hover, .alive-card.reveal.in:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--planet, var(--accent)) 50%, var(--line));
+  box-shadow: 0 20px 40px -22px rgba(0,0,0,.8);
+}
+.resting-card:active { transform: scale(.97) !important; }
+.resting-card:hover .resting-pin { animation: bob .6s ease; }
+.map-pin:active { transform: scale(.94); }
+
+/* ---------- Trump cards ---------- */
+.cards { perspective: 1600px; gap: 1.8rem; }
+.card { opacity: 0; transform: none; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.card.in { opacity: 1; transform: none; animation: dealIn .95s cubic-bezier(.2,1.15,.3,1) backwards; animation-delay: var(--deal, 0ms); }
+.card.in:hover { transform: translateY(-8px); }
+.card:active { transform: scale(.985); }
+@keyframes dealIn {
+  from { opacity: 0; transform: translateY(90px) rotate(-8deg) scale(.88); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; transform: none; }
+}
+.card-tilt {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.card.tilting .card-tilt { transition: transform .1s linear; }
+.card-inner {
+  min-height: 680px;
+  transition: transform 1.3s cubic-bezier(.45,.05,.2,1);
+}
+.card.turning .card-tilt { animation: turnLift 1.3s cubic-bezier(.45,.05,.2,1); }
+@keyframes turnLift {
+  0%   { scale: 1;    translate: 0 0; }
+  35%  { scale: 1.08; translate: 0 -18px; }
+  70%  { scale: 1.05; translate: 0 -10px; }
+  100% { scale: 1;    translate: 0 0; }
+}
+.card.turning .card-face { box-shadow: 0 34px 60px -22px color-mix(in srgb, var(--planet, var(--accent)) 55%, transparent); }
+.card-face::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgba(255,235,210,.16), transparent 55%);
+  opacity: 0; transition: opacity .3s ease;
+}
+.card:hover .card-face::after { opacity: 1; }
+.card-front::before {
+  content: ""; position: absolute; top: -50%; bottom: -50%; left: -60%; width: 50%; pointer-events: none; z-index: 3;
+  background: linear-gradient(105deg, transparent 20%, rgba(255,225,185,.13) 50%, transparent 80%);
+  transform: translateX(-120%) skewX(-12deg);
+  animation: foil 7s ease-in-out infinite;
+}
+.card:nth-child(2n) .card-front::before { animation-delay: 1.8s; }
+.card:nth-child(3n) .card-front::before { animation-delay: 3.4s; }
+@keyframes foil { 0%, 55% { transform: translateX(-120%) skewX(-12deg); } 100% { transform: translateX(520%) skewX(-12deg); } }
+.card-art { animation: floaty 4.5s ease-in-out infinite; }
+@keyframes floaty { 50% { transform: translateY(-4px) rotate(-3deg); } }
+.card-tag { animation: pulse 2.6s ease-in-out infinite; }
+.card-hint .spin { display: inline-block; transition: transform .7s cubic-bezier(.4,.1,.2,1); }
+.card:hover .card-hint .spin { transform: rotate(180deg); }
+
+/* the Open-the-chronicle button: zoom in & out */
+.card-open { animation: zoomPulse 2.2s ease-in-out infinite; transition: background .25s, filter .25s; }
+.card-open .arr { display: inline-block; transition: transform .3s ease; }
+.card-open:hover { animation: none; transform: scale(1.14); background: color-mix(in srgb, var(--planet, var(--accent)) 38%, var(--bg-2)); filter: brightness(1.15); transition: transform .3s cubic-bezier(.2,1.3,.3,1), background .25s, filter .25s; }
+.card-open:hover .arr { transform: translateX(5px); }
+.card-open:active { animation: none; transform: scale(.94); }
+@keyframes zoomPulse {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 color-mix(in srgb, var(--planet, var(--accent)) 55%, transparent); }
+  50%      { transform: scale(1.1);  box-shadow: 0 0 0 11px transparent; }
+}
+
+/* ---------- Photos & credits ---------- */
+.photo { margin: 0; }
+.photo-frame {
+  position: relative; overflow: hidden; aspect-ratio: 16 / 10;
+  border-radius: 10px; border: 1px solid var(--line);
+  background: linear-gradient(110deg, #1e150d 30%, #30221a 50%, #1e150d 70%);
+  background-size: 200% 100%; animation: shimmer 1.4s linear infinite;
+}
+.photo-frame.done { animation: none; background: #120c07; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.photo-frame img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  opacity: 0; transform: scale(1.1);
+  transition: opacity .9s ease, transform 1.6s cubic-bezier(.2,.7,.2,1);
+}
+.photo-frame img.loaded { opacity: 1; transform: scale(1); }
+.card:hover .photo-frame img.loaded, .alive-card:hover .photo-frame img.loaded { transform: scale(1.06); }
+.photo-cap { display: flex; flex-direction: column; gap: .15rem; margin-top: .45rem; font-size: .66rem; line-height: 1.4; color: var(--ink-dim); }
+.photo-text { font-family: var(--serif); font-style: italic; font-size: .8rem; color: var(--ink); opacity: .85; }
+.photo-src a { color: var(--accent-2); text-decoration: underline dotted; text-underline-offset: 2px; position: relative; z-index: 4; }
+.photo-src a:hover { color: #fff; }
+.card-photo .photo-text { display: none; }
+.card-photo .photo-frame { aspect-ratio: 16 / 9; }
+.m-figure { margin-bottom: 1.4rem; }
+.m-figure .photo-frame { aspect-ratio: 16 / 9; max-height: 420px; }
+.m-figure .photo-text { font-size: .92rem; }
+.m-figure .photo-cap { font-size: .72rem; }
+.alive-card .photo { margin-bottom: 1rem; }
+.ill-note { position: absolute; left: 8px; bottom: 8px; font: 700 .6rem system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 999px; background: rgba(0,0,0,.55); color: var(--accent-2); }
+.photo-fallback { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 1rem; font-size: .78rem; color: var(--ink-dim); }
+
+/* ---------- Modal motion ---------- */
+.modal-backdrop { animation: fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut { to { opacity: 0; } }
+@keyframes modalOut { to { opacity: 0; transform: translateY(24px) scale(.98); } }
+.modal-backdrop.closing { animation: fadeOut .25s ease forwards; }
+.modal-backdrop.closing .modal { animation: modalOut .25s ease forwards; }
+
+/* Reduced motion: only calm the endless ambient loops — taps, scrolling and card turns stay smooth */
+@media (prefers-reduced-motion: reduce) {
+  .brand-dot, .alive-flag, .hero-sun, .card-front::before, .card-open, .card-art, .card-tag,
+  .hero-cta .arrow, .hero h1 .accent { animation: none !important; }
+}
+
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛞</text></svg>">
+</head>
+<body>
+
+<!-- ===== Starfield background ===== -->
+<canvas id="starfield" aria-hidden="true"></canvas>
+
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ===== Navigation ===== -->
+<nav class="nav">
+  <a class="brand" href="#top">
+    <span class="brand-dot"></span><span class="brand-text">Gate to the truth of Debris</span>
+  </a>
+  <div class="nav-links">
+    <a href="#timeline">Timeline</a>
+    <a href="#rovers">The Rovers</a>
+    <a href="#maps">Paper Maps</a>
+    <a href="#still-alive">Still Driving</a>
+    <a href="#epilogue">Epilogue</a>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<header class="hero" id="top">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">2026 NASA Space Apps Challenge · Abandoned but not Forgotten</p>
+    <h1>They were built to last<br><span class="accent">90 days.</span></h1>
+    <p class="hero-byline">Being a true account of the machines we abandoned upon the Moon and Mars</p>
+    <p class="hero-sub">
+      Six rovers were driven on the Moon and Mars. Four were told to stop, die, or simply
+      parked and left. This is the story of the machines we abandoned — and the science
+      they gave us on the way out.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" data-count="4">0</span><span class="stat-label">rovers abandoned</span></div>
+      <div class="stat"><span class="stat-num" data-count="53" data-suffix=" km">0</span><span class="stat-label">combined odometry</span></div>
+      <div class="stat"><span class="stat-num" data-count="55" data-suffix=" yrs">0</span><span class="stat-label">years of robot drivers</span></div>
+    </div>
+    <a class="hero-cta" href="#timeline"><span>Start the journey</span><span class="arrow">↓</span></a>
+  </div>
+  <div class="hero-horizon" aria-hidden="true">
+    <svg viewBox="0 0 1440 220" preserveAspectRatio="none">
+      <defs>
+        <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffe0ac"/>
+          <stop offset="40%" stop-color="#ff9a4d" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#ff7a3d" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="1000" cy="150" r="140" fill="url(#sunGlow)" opacity="0.9" class="hero-sun"/>
+      <circle cx="1000" cy="150" r="34" fill="#ffe3b8"/>
+      <path d="M0,140 C240,90 420,150 640,120 C880,88 1080,160 1240,130 C1340,112 1400,140 1440,132 L1440,220 L0,220 Z" fill="#1a0f0a"/>
+      <path d="M0,150 C240,100 420,160 640,130 C880,98 1080,170 1240,140 C1340,122 1400,150 1440,142 L1440,220 L0,220 Z" fill="#120a06" opacity="0.7"/>
+    </svg>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== Timeline ===== -->
+<section id="timeline" class="section">
+  <p class="kicker">Chapter I · The Long Road</p>
+  <h2 class="section-title">54 years of robot road trips</h2>
+  <p class="section-sub">Every rover that ever drove on another world — click one to hear its story.</p>
+  <div class="timeline" id="timeline-track"><!-- built by app.js --></div>
+</section>
+
+<!-- ===== Rover cards ===== -->
+<section id="rovers" class="section">
+  <p class="kicker">Chapter II · The Cast of Wanderers</p>
+  <h2 class="section-title">Meet the drivers</h2>
+  <p class="section-sub">Deal yourself a card — turn it over to hear its tale, then open the full chronicle.</p>
+  <div class="cards" id="cards"><!-- built by app.js --></div>
+</section>
+
+<!-- ===== Paper survey maps ===== -->
+<section id="maps" class="section">
+  <p class="kicker">Chapter III · The Great Survey</p>
+  <h2 class="section-title">Unfold the paper maps</h2>
+  <p class="section-sub">
+    Hand-drawn survey sheets from the field notes — the Moon's near side and the whole of Mars.
+    Hover a pin to read its label. Click a rover pin to open its story.
+  </p>
+  <div class="maps-grid">
+    <div class="map-card">
+      <div class="map-head">
+        <h3>🌙 The Moon — Near Side</h3>
+        <p>6 crewed landing sites · 3 lunar rovers still parked in place</p>
+      </div>
+      <div class="map-frame" id="moon-map"></div>
+      <div class="map-legend">
+        <span><i class="legend-pin" style="background:#b3402a"></i>Apollo rovers — still parked</span>
+        <span><i class="legend-pin" style="background:#77694d"></i>Descent stages, landers &amp; science gear</span>
+      </div>
+    </div>
+    <div class="map-card mars">
+      <div class="map-head">
+        <h3>🔴 Mars — Global Sheet</h3>
+        <p>Every robot driver, flyer and silent lander, 1997 – today</p>
+      </div>
+      <div class="map-frame" id="mars-map"></div>
+      <div class="map-legend">
+        <span><i class="legend-pin" style="background:#b3402a"></i>Abandoned rovers &amp; the grounded flyer</span>
+        <span><i class="legend-pin" style="background:#4e7a3a"></i>Still driving today</span>
+        <span><i class="legend-pin" style="background:#77694d"></i>Silent landers</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Resting places map ===== -->
+<section class="section">
+  <h2 class="section-title">The final parking lot</h2>
+  <p class="section-sub">Where each machine stands right now, as you read this.</p>
+  <div class="resting-grid" id="resting"><!-- built by app.js --></div>
+</section>
+
+<!-- ===== Still driving ===== -->
+<section id="still-alive" class="section">
+  <p class="kicker">Chapter IV · The Watch</p>
+  <h2 class="section-title">Not abandoned <span class="accent">(yet)</span></h2>
+  <p class="section-sub">The two rovers still rolling on Mars today. One day, they'll join the parking lot too.</p>
+  <div class="alive-grid">
+    <div class="alive-card">
+      <div class="photo-slot" data-photo="curiosity"></div>
+      <div class="alive-flag" style="--c:#9fd08c">● ACTIVE</div>
+      <h3>Curiosity</h3>
+      <p class="alive-meta">Gale Crater · driving since Aug 2012</p>
+      <p>Still climbing Mount Sharp, still sniffing for organic chemistry. Over 33 km driven and counting. Its wheels are slowly shredding — every dent is logged from orbit.</p>
+    </div>
+    <div class="alive-card">
+      <div class="photo-slot" data-photo="perseverance"></div>
+      <div class="alive-flag" style="--c:#9fd08c">● ACTIVE</div>
+      <h3>Perseverance</h3>
+      <p class="alive-meta">Jezero Crater · driving since Feb 2021</p>
+      <p>Caching rock samples for a future trip home, and occasionally pausing to watch Ingenuity's replacement dust. It even kept a "safety zone" around its fallen helicopter friend.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Epilogue ===== -->
+<section id="epilogue" class="section epilogue">
+  <div class="silence">
+    <p class="kicker">Chapter V · The Long Silence</p>
+    <h3 class="silence-title">Time since their last word</h3>
+    <p class="silence-sub">Live, and still counting — measured to the second, from this page to the day each machine went quiet.</p>
+    <div class="silence-grid" id="silence"></div>
+  </div>
+  <blockquote class="big-quote">
+    "My battery is low and it's getting dark."
+    <footer>— Opportunity's final transmission, June 10 2018 <span class="quote-note">(as the NASA scientist describing it put it — a paraphrase that became its epitaph)</span></footer>
+  </blockquote>
+  <p class="epilogue-text">
+    None of these machines was truly lost. They were spent — deliberately, gloriously —
+    in exchange for knowledge no human eye could gather. The Moon buggies still sit where
+    astronauts parked them, with tire tracks that will outlast every city on Earth.
+    Sojourner's solar panels are gathering dust a few meters from Pathfinder.
+    Spirit sleeps in the sand she was stuck in. Opportunity rests at the rim of Endeavour.
+  </p>
+  <p class="epilogue-text">
+    Abandoned, but not forgotten. Drive on.
+  </p>
+</section>
+
+<footer class="footer">
+  <p>Built for the <strong>2026 NASA Space Apps Challenge</strong> — "Abandoned but not Forgotten".</p>
+  <p class="footer-sources">Data sources: NASA NSSDCA Master Catalog · NASA/JPL Mars Exploration Rover mission archives · NASA Apollo Program archives.</p>
+  <p class="footer-sources">Images: NASA, NASA/JPL-Caltech and partners (Cornell, ASU, MSSS), via the NASA Photojournal and Wikimedia Commons — public domain. Each image is credited beneath it.</p>
+</footer>
+
+</main>
+
+<!-- ===== Story modal ===== -->
+<div class="modal-backdrop" id="modal" hidden>
+  <article class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-close" id="modal-close" aria-label="Close story">×</button>
+    <div id="modal-body"><!-- filled by app.js --></div>
+  </article>
+</div>
+
+<script>
+/* ============================================================
+   Gate to the truth of Debris — app.js
+   Rover data, timeline, cards, story modal, starfield.
+   ============================================================ */
+
+/* ---------------- Rover data ---------------- */
+const ROVERS = [
+  {
+    id: "lrv",
+    world: "The Moon",
+    planet: "#c9cdd4",
+    icon: "🌙",
+    name: "Lunar Roving Vehicle",
+    nick: "The Moon Buggies",
+    year: 1971,
+    yearsLabel: "1971 – 1972",
+    status: "PARKED",
+    color: "#c9cdd4",
+    quote: "Astronauts drove it, parked it, and simply walked away. Three buggies are still sitting there today.",
+    planned: "3 missions",
+    actual: "3 missions",
+    distance: "90.1 km",
+    lastContact: "Dec 14, 1972",
+    tagline: "Three electric cars were parked on the Moon — and no one has ever gone back for them.",
+    story: [
+      "Between 1971 and 1972, astronauts on Apollo 15, 16 and 17 each unfolded an electric car from the side of their lunar module and drove it across the Moon. The Lunar Roving Vehicle — the only car humans have ever driven on another world — had wire-mesh wheels, no roof, a top speed of about 13 km/h, and a range limited only by how far the astronauts wanted to walk home if it died.",
+      "It worked beautifully. It hauled tools, drills and hundreds of kilograms of Moon rock. On Apollo 17, Gene Cernan even took it for a brief one-wheel 'spin' during the Grand Prix test drive on Apollo 16's mission. It climbed slopes, dodged craters, and made three field trips possible instead of three short walks.",
+      "Then came the strangest parking job in history. Before each crew left, they parked the rover a short distance from the lunar module — positioned so its TV camera could film the liftoff back to orbit. They walked away. The rovers are still there: at Hadley-Apennine, the Descartes Highlands, and Taurus-Littrow. Their tire tracks will stay crisp for millions of years, because the Moon has no wind.",
+      "Before leaving the last one, Cernan did one small human thing: he scratched his daughter Tracy's initials into the dust on the rover's frame — 'T.L.E.' — saying no one would ever erase them."
+    ],
+    science: [
+      "Carried lunar drills and sampling tools that let astronauts collect more rock in less time than Apollo 11 through 14 combined.",
+      "Geophone measurements taken at different points revealed the Moon's shallow subsurface structure.",
+      "Returned 273 kg of lunar samples during the three rover missions — the science haul that made the buggies worth it."
+    ],
+    epitaph: "Parked where the camera could see the launch. Keys still 'in the ignition' — nobody bothered to take them out.",
+    resting: "Apollo 15's rover sits in the Hadley-Apennine valley, Apollo 16's in the Descartes Highlands, and Apollo 17's in the Taurus-Littrow valley.",
+    coords: ["Hadley–Apennine, 26.1°N 3.6°E", "Descartes Highlands, 8.9°S 15.5°E", "Taurus–Littrow, 20.2°N 30.8°E"]
+  },
+  {
+    id: "sojourner",
+    world: "Mars",
+    planet: "#ff6a3d",
+    icon: "🛞",
+    name: "Sojourner",
+    nick: "The Pathfinder Pup",
+    year: 1997,
+    yearsLabel: "Jul – Sep 1997",
+    status: "PARKED",
+    color: "#ff6a3d",
+    quote: "The first rover on another planet was the size of a microwave oven — and it changed everything.",
+    planned: "7 days",
+    actual: "83 days",
+    distance: "≈100 m",
+    lastContact: "Sep 27, 1997",
+    tagline: "Designed to drive for a week. It drove for twelve — then froze in place beside its lander.",
+    story: [
+      "On July 4, 1997, NASA bounced a spacecraft across the surface of Mars inside giant airbags. Out of the Pathfinder lander rolled Sojourner: a 10.5 kg rover, about the size of a microwave oven, with six wheels and a top speed of one centimeter per second. It was the first robot ever to drive on another planet.",
+      "Sojourner was a scout sent to prove a point: that a rover could survive on Mars, navigate around rocks, and do real geology with a tiny X-ray spectrometer. It analyzed 15 rocks with names like 'Barnacle Bill' and 'Yogi', and found evidence that Mars once had floods powerful enough to carry boulders.",
+      "The little rover was supposed to work for one week. It kept going for almost three months — outliving the lander's planned mission too. In late September 1997, Pathfinder's battery began to fail in the Martian cold. The lander went silent on September 27, and without it, Sojourner couldn't phone home or charge properly.",
+      "Mission controllers had a plan for this: if the rover ever got lost, it was programmed to return and circle the lander. Its final resting spot, near the lander in Ares Vallis, is consistent with exactly that — Sojourner most likely died doing its duty, waiting at home base for a signal that never came."
+    ],
+    science: [
+      "Proved the rocker-bogie suspension and autonomous navigation that every Mars rover since has inherited.",
+      "Its Alpha Proton X-ray Spectrometer (APXS) measured rock chemistry, hinting at an ancient flood-carved terrain.",
+      "Validated airbag landings — the technique later retired after Spirit and Opportunity proved it, and reused for the 2004 missions."
+    ],
+    epitaph: "Maybe it really is circling the lander even now — a tiny robot keeping its promise to come home.",
+    resting: "Ares Vallis, within meters of the Pathfinder lander (named the Carl Sagan Memorial Station).",
+    coords: ["Ares Vallis, 19.13°N 33.87°W"]
+  },
+  {
+    id: "spirit",
+    world: "Mars",
+    planet: "#e0522a",
+    icon: "🧭",
+    name: "Spirit",
+    nick: "The Stubborn Twin",
+    year: 2004,
+    yearsLabel: "2004 – 2010",
+    status: "STUCK",
+    color: "#e0522a",
+    quote: "It broke a wheel, drove backwards for kilometers, got trapped in a sand pit — and kept doing science from its deathbed.",
+    planned: "90 sols",
+    actual: "2,210 sols",
+    distance: "7.73 km",
+    lastContact: "Mar 22, 2010",
+    tagline: "The rover that turned being trapped into a career move.",
+    story: [
+      "Spirit landed in Gusev Crater on January 4, 2004, inside a cocoon of airbags that bounced a jaw-dropping 27 times before coming to rest. Its mission was planned for 90 Martian days. It ran for over six years.",
+      "Almost everything that went wrong with Spirit turned into science. Its right-front wheel failed in 2006, so the rover drove backwards everywhere, dragging the dead wheel — which happened to plow a furrow through the soil and expose nearly pure silica, the strongest hint yet of hot springs and ancient water. When it couldn't reach Home Plate before winter, it parked on a slope tilted toward the Sun to survive — and studied the northern Martian sky in detail while it waited.",
+      "Then in May 2009, Spirit broke through a thin crust and sank into soft sulfate-rich sand hidden beneath it, a spot engineers nicknamed 'Troy'. Five wheels spun. It never moved again. NASA spent months of careful testing on Earth trying to free a robot 130 million km away, and gave the world a masterclass in remote rescue engineering.",
+      "Trapped at a bad angle for the coming winter, Spirit finally lost power sometime around March 2010. Mars never heard from it again. Its last mission wasn't wasted, though: while stuck, it measured Mars' tiny seasonal wobble, evidence that the planet's core is molten — science only a stationary rover could do."
+    ],
+    science: [
+      "Found silica-rich soil at Home Plate — the best evidence from either rover of ancient hot-spring or hydrothermal environments.",
+      "Confirmed Gusev Crater's plains were once altered by water, not just volcanic lava as first assumed.",
+      "While stuck at Troy, it contributed to measurements of Mars' nutation, implying a fluid (molten) core."
+    ],
+    epitaph: "Buried up to its hubcaps in the sand it named Troy. The last rover known to have seen a Martian winter from the inside.",
+    resting: "Embedded in soft sand at the 'Troy' site, near Home Plate, in the Columbia Hills region of Gusev Crater.",
+    coords: ["Gusev Crater (Troy site), 14.6°S 175.5°E"]
+  },
+  {
+    id: "opportunity",
+    world: "Mars",
+    planet: "#ff8c42",
+    icon: "🏁",
+    name: "Opportunity",
+    nick: "Oppy",
+    year: 2004,
+    yearsLabel: "2004 – 2018",
+    status: "DARK",
+    color: "#ff8c42",
+    quote: "90 days, 45 km, 14 years. The little rover that finished a marathon — then kept running.",
+    planned: "90 sols",
+    actual: "5,111 sols",
+    distance: "45.16 km",
+    lastContact: "Jun 10, 2018",
+    tagline: "The most productive exploration robot ever built — killed by a global dust storm it couldn't outlast.",
+    story: [
+      "Opportunity landed in Meridiani Planum on January 25, 2004 — three weeks after its twin Spirit — and almost immediately rolled into a small crater and, by pure luck, found what it was sent to look for: hematite 'blueberries', concretions formed in water. The landing site had once been soaked.",
+      "Over the next fourteen and a half years, Oppy crossed the Martian plains like a road-tripper with no itinerary: down into Erebus and the huge Victoria Crater, along the rim of Endeavour Crater, through valleys named for the crew of Challenger and Columbia. In 2015 it completed the first off-world marathon — 42.2 km, spread over 11 years — and by 2018 had driven 45.16 km, more than any vehicle off Earth in history.",
+      "In June 2018, a planet-encircling dust storm blotted out the sky. Solar-powered, Opportunity couldn't see the Sun. Its final message on June 10, 2018 reported the power dropping and the light fading. Then silence. NASA spent months calling: waking it with songs, listening with the antennas of spacecraft in orbit, hoping the wind would clean its solar panels as it had dozens of times before.",
+      "On February 13, 2019, engineers gave up. The mission had lasted 57 times its design life. In the words of the team's project manager, John Callas: it was like losing a friend. Fans around the world mourned a golf-cart-sized robot, and its 'last words' became an epitaph famous far beyond spaceflight."
+    ],
+    science: [
+      "Proved Meridiani Planum held persistent liquid water — acidic, salty ancient groundwater that altered rocks over long ages.",
+      "Documented billions of years of environmental change at Victoria and Endeavour craters, including clay minerals from less acidic water.",
+      "Set the off-world driving record (45.16 km) and surveyed Mars' longest continuous geologic cross-section to that date."
+    ],
+    epitaph: "The marathon rover. It was supposed to last 90 days — it lasted 14 years, and only a sky gone dark could stop it.",
+    resting: "Perseverance Valley, on the western rim of Endeavour Crater.",
+    coords: ["Endeavour Crater rim, 1.95°S 354.47°E"]
+  },
+  {
+    id: "ingenuity",
+    world: "Mars",
+    planet: "#b388ff",
+    icon: "🚁",
+    name: "Ingenuity",
+    nick: "The Honorary Rover",
+    year: 2021,
+    yearsLabel: "2021 – 2024",
+    status: "GROUNDED",
+    color: "#b388ff",
+    quote: "Not a rover — but it flew so far from its lander that it earned its wings, then lost them.",
+    planned: "5 flights",
+    actual: "72 flights",
+    distance: "17 km flown",
+    lastContact: "Apr 16, 2024 (deaf test)",
+    tagline: "The first aircraft on another planet — grounded forever after 72 flights, with its rotor blades snapped.",
+    story: [
+      "Ingenuity hitched a ride under Perseverance's belly and was supposed to make five test flights in 30 days. On April 19, 2021, it rose three meters into the Martian air — the first powered, controlled flight by any aircraft on another planet. Wright Brothers moment, achieved with a helicopter the weight of a laptop.",
+      "The 30-day demo became a three-year career. Ingenuity graduated from testbed to scout, flying ahead of Perseverance over dunes and river deltas the rover couldn't safely cross, photographing terrain from altitudes up to 24 meters. It survived a northern winter, a dust storm, and the loss of one of its navigation sensors by rewriting its own flight code from Earth.",
+      "On January 18, 2024, on flight 72, it rose for a quick hover over a featureless patch of sand. Its navigation system lost the ground reference, landed too hard, and snapped the tip of a rotor blade — then the others. Photos taken a week later showed a lone rotor lying in the sand several meters away.",
+      "Ingenuity now stands in the sand of Jezero Crater, upright and silent, its twin rotors mangled. Perseverance drove past its fallen scout one last time before moving on. Some aircraft are retired to museums. Ingenuity's museum is the whole planet of Mars."
+    ],
+    science: [
+      "Proved powered flight is possible in Mars' whisper-thin atmosphere — opening aerial exploration for future missions.",
+      "Served as an aerial scout on 72 flights, helping Perseverance route around hazards and target outcrops.",
+      "Demonstrated autonomous flight software robust enough to survive years of harsh conditions it was never designed for."
+    ],
+    epitaph: "Flew 72 times when 5 was the assignment. Now it stands watch over Jezero, wings folded for good.",
+    resting: "Jezero Crater, upright in the sand where flight 72 ended — visited once more by Perseverance before it drove on.",
+    coords: ["Jezero Crater, 18.4°N 77.4°E"]
+  }
+];
+
+/* ---------------- Helpers ---------------- */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+/* ---------------- Timeline ---------------- */
+function buildTimeline() {
+  const track = $("#timeline-track");
+  const items = [
+    ...ROVERS.map(r => ({
+      year: r.year, label: r.yearsLabel, name: r.name, note: `${r.world} · ${r.status}`, icon: r.icon, id: r.id
+    })),
+    { year: 2012, label: "Aug 2012 – now", name: "Curiosity", note: "Still driving", icon: "🛞", alive: true },
+    { year: 2021, label: "Feb 2021 – now", name: "Perseverance", note: "Still driving", icon: "🛞", alive: true }
+  ].sort((a, b) => a.year - b.year);
+
+  for (const it of items) {
+    const btn = document.createElement("button");
+    btn.className = "tl-item";
+    btn.innerHTML = `
+      <span class="tl-year">${it.label}</span>
+      <span class="tl-icon">${it.icon}</span>
+      <span class="tl-name">${it.name}</span>
+      <span class="tl-note">${it.note}</span>`;
+    if (it.id) btn.addEventListener("click", () => openStory(it.id));
+    else btn.addEventListener("click", () => scrollToId("still-alive"));
+    track.appendChild(btn);
+  }
+}
+
+/* ---------------- Cards (storybook flip deck) ---------------- */
+const ROMAN = ["I", "II", "III", "IV", "V"];
+
+function buildCards() {
+  const grid = $("#cards");
+  ROVERS.forEach((r, i) => {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.style.setProperty("--planet", r.color);
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `${r.name} — press Enter to turn the card`);
+    const tale = r.story[0].split(". ").slice(0, 2).join(". ") + ".";
+    card.innerHTML = `
+      <div class="card-tilt"><div class="card-inner">
+        <div class="card-face card-front">
+          <span class="card-tag">${r.status}</span>
+          <p class="card-ch">Chapter ${ROMAN[i]} · ${r.world}</p>
+          <div class="card-top">
+            <div class="card-art">${r.icon}</div>
+            <div class="card-id">
+              <h3>${r.name}</h3>
+              <span class="card-nick">${r.nick}</span>
+            </div>
+          </div>
+          ${photoHTML(r.id, "card-photo")}
+          <p class="card-quote">${r.quote}</p>
+          <div class="card-facts">
+            <div class="card-fact"><b>${r.planned} → ${r.actual}</b><span>planned vs real life</span></div>
+            <div class="card-fact"><b>${r.distance}</b><span>traveled</span></div>
+            <div class="card-fact"><b>${r.lastContact}</b><span>last contact</span></div>
+          </div>
+          <span class="card-hint"><span class="spin">↻</span> Turn the card to hear its tale</span>
+        </div>
+        <div class="card-face card-back">
+          <p class="card-ch">The tale · Chapter ${ROMAN[i]}</p>
+          <p class="card-back-epi">${r.epitaph}</p>
+          <p class="card-back-text">${tale}</p>
+          <div class="card-back-rest">
+            <span>📍</span>
+            <div>${r.resting}<br>${r.coords.map(c => `<code style="font-size:.72rem;color:var(--accent-2)">${c}</code>`).join("<br>")}</div>
+          </div>
+          <button class="card-open" data-story="${r.id}"><span>Open the full chronicle</span> <span class="arr">→</span></button>
+        </div>
+      </div></div>`;
+    card.addEventListener("click", e => {
+      if (e.target.closest("a")) return;
+      if (e.target.closest(".card-open")) { openStory(r.id); return; }
+      turnCard(card);
+    });
+    card.addEventListener("keydown", e => {
+      if (e.target !== card || (e.key !== "Enter" && e.key !== " ")) return;
+      e.preventDefault();
+      turnCard(card);
+    });
+    /* pointer tilt + glare */
+    card.addEventListener("pointermove", e => {
+      if (e.pointerType !== "mouse") return;
+      const b = card.getBoundingClientRect();
+      const x = (e.clientX - b.left) / b.width, y = (e.clientY - b.top) / b.height;
+      card.classList.add("tilting");
+      card.style.setProperty("--ry", ((x - 0.5) * 14).toFixed(2) + "deg");
+      card.style.setProperty("--rx", ((0.5 - y) * 12).toFixed(2) + "deg");
+      card.style.setProperty("--gx", (x * 100).toFixed(1) + "%");
+      card.style.setProperty("--gy", (y * 100).toFixed(1) + "%");
+    });
+    card.addEventListener("pointerleave", () => {
+      card.classList.remove("tilting");
+      card.style.setProperty("--rx", "0deg");
+      card.style.setProperty("--ry", "0deg");
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ---------------- Resting places ---------------- */
+function buildResting() {
+  const grid = $("#resting");
+  for (const r of ROVERS) {
+    const div = document.createElement("div");
+    div.className = "resting-card";
+    div.style.setProperty("--planet", r.color);
+    div.innerHTML = `
+      <div class="resting-pin">📍</div>
+      <div>
+        <h4>${r.name}</h4>
+        <p>${r.resting}</p>
+        ${r.coords.map(c => `<div class="resting-coords">${c}</div>`).join("")}
+      </div>`;
+    div.addEventListener("click", () => openStory(r.id));
+    grid.appendChild(div);
+  }
+}
+
+/* ---------------- Story modal ---------------- */
+function openStory(id) {
+  const r = ROVERS.find(x => x.id === id);
+  if (!r) return;
+  const body = $("#modal-body");
+  body.style.setProperty("--planet", r.color);
+  body.innerHTML = `
+    ${photoHTML(r.id, "m-figure")}
+    <p class="m-eyebrow">${r.world} · ${r.yearsLabel}</p>
+    <h2 class="m-title">${r.icon} ${r.name}</h2>
+    <p class="m-tagline">${r.tagline}</p>
+    <div class="m-stats">
+      <div class="m-stat"><b>${r.planned}</b><span>designed life</span></div>
+      <div class="m-stat"><b>${r.actual}</b><span>actual life</span></div>
+      <div class="m-stat"><b>${r.distance}</b><span>distance</span></div>
+      <div class="m-stat"><b>${r.lastContact}</b><span>last contact</span></div>
+    </div>
+    <h3 class="m-section-title">The story</h3>
+    <div class="m-story">${r.story.map(p => `<p>${p}</p>`).join("")}</div>
+    <h3 class="m-section-title">The science it made possible</h3>
+    <div class="m-science"><ul style="padding-left:1.2rem; color:var(--ink-dim); font-size:0.95rem">
+      ${r.science.map(s => `<li style="margin-bottom:0.5rem">${s}</li>`).join("")}
+    </ul></div>
+    <div class="m-epitaph">${r.epitaph}<span class="who">— epitaph</span></div>
+    <p class="m-resting">📍 <strong style="color:var(--ink)">Final resting place:</strong> ${r.resting}
+      ${r.coords.map(c => `<br><code>${c}</code>`).join("")}
+    </p>`;
+  const modal = $("#modal");
+  clearTimeout(modal._t);
+  modal.classList.remove("closing");
+  modal.hidden = false;
+  markPhotos();
+  document.body.style.overflow = "hidden";
+  $("#modal-close").focus();
+}
+
+function closeStory() {
+  const modal = $("#modal");
+  if (modal.hidden || modal.classList.contains("closing")) return;
+  modal.classList.add("closing");
+  document.body.style.overflow = "";
+  modal._t = setTimeout(() => { modal.hidden = true; modal.classList.remove("closing"); }, 250);
+}
+$("#modal").addEventListener("click", e => { if (e.target === $("#modal")) closeStory(); });
+$("#modal-close").addEventListener("click", closeStory);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeStory(); });
+
+/* ---------------- Scroll reveal ---------------- */
+function revealObserver() {
+  const io = new IntersectionObserver(entries => {
+    for (const en of entries) if (en.isIntersecting) {
+      en.target.classList.add("in");
+      io.unobserve(en.target);
+      setTimeout(() => { en.target.style.transitionDelay = ""; }, 1300);
+    }
+  }, { threshold: 0.12 });
+  $$(".card").forEach((c, i) => { c.style.setProperty("--deal", `${(i % 3) * 140}ms`); io.observe(c); });
+  $$(".section-title, .section-sub, .kicker, .alive-card, .resting-card, .map-card, .big-quote, .epilogue-text, .silence-card")
+    .forEach(el => { el.classList.add("reveal"); io.observe(el); });
+}
+
+/* ---------------- The Long Silence (live clocks) ---------------- */
+const SILENCE = [
+  { name: "Sojourner",  since: "Sep 27, 1997", ms: Date.UTC(1997, 8, 27, 4, 0, 0),  note: "Waiting beside Pathfinder, Ares Vallis" },
+  { name: "Spirit",     since: "Mar 22, 2010", ms: Date.UTC(2010, 2, 22, 0, 0, 0),  note: "Asleep in the sand at Troy, Gusev Crater" },
+  { name: "Opportunity", since: "Jun 10, 2018", ms: Date.UTC(2018, 5, 10, 12, 0, 0), note: "Resting at Endeavour's rim, Perseverance Valley" },
+  { name: "Ingenuity",  since: "Apr 16, 2024", ms: Date.UTC(2024, 3, 16, 0, 0, 0),  note: "Grounded at Jezero, wings folded" }
+];
+
+function buildSilence() {
+  const grid = $("#silence");
+  if (!grid) return;
+  grid.innerHTML = SILENCE.map((s, i) => `
+    <div class="silence-card">
+      <div class="silence-name">${s.name}</div>
+      <div class="silence-since">silent since ${s.since}</div>
+      <div class="silence-clock" data-i="${i}">—</div>
+      <div class="silence-note">${s.note}</div>
+    </div>`).join("");
+  tickSilence();
+  setInterval(tickSilence, 1000);
+}
+
+function tickSilence() {
+  const now = Date.now();
+  $$(".silence-clock").forEach(el => {
+    const s = SILENCE[+el.dataset.i];
+    const sec = Math.max(0, Math.floor((now - s.ms) / 1000));
+    const yrs = Math.floor(sec / 31557600);
+    const days = Math.floor((sec % 31557600) / 86400);
+    const hh = String(Math.floor((sec % 86400) / 3600)).padStart(2, "0");
+    const mm = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+    const ss = String(sec % 60).padStart(2, "0");
+    el.textContent = `${yrs} yr ${days} d ${hh}:${mm}:${ss}`;
+  });
+}
+
+/* ---------------- Hero counters ---------------- */
+function animateCounters() {
+  const io = new IntersectionObserver(entries => {
+    for (const en of entries) {
+      if (!en.isIntersecting) continue;
+      const el = en.target;
+      const target = +el.dataset.count;
+      const suffix = el.dataset.suffix || "";
+      const t0 = performance.now();
+      const dur = 1600;
+      const tick = now => {
+        const p = Math.min((now - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      io.unobserve(el);
+    }
+  }, { threshold: 0.4 });
+  $$(".stat-num").forEach(el => io.observe(el));
+}
+
+/* ---------------- Starfield: warm stars, shooting stars, embers ---------------- */
+function starfield() {
+  const canvas = $("#starfield");
+  const ctx = canvas.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let stars = [], embers = [], meteors = [], w, h, lastMeteor = 0, tPrev = 0;
+
+  function newEmber(fromBottom) {
+    return {
+      x: Math.random() * w,
+      y: fromBottom ? h + 20 * devicePixelRatio : Math.random() * h,
+      vy: (0.25 + Math.random() * 0.45) * devicePixelRatio,
+      sway: Math.random() * Math.PI * 2,
+      size: (0.9 + Math.random() * 1.6) * devicePixelRatio,
+      ph: Math.random() * Math.PI * 2
+    };
+  }
+
+  function resize() {
+    w = canvas.width = innerWidth * devicePixelRatio;
+    h = canvas.height = innerHeight * devicePixelRatio;
+    stars = Array.from({ length: Math.min(220, (w * h) / 9000) }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.4 * devicePixelRatio + 0.3,
+      tw: Math.random() * Math.PI * 2,
+      sp: 0.004 + Math.random() * 0.012,
+      warm: Math.random() < 0.22   /* some stars glow ember-orange */
+    }));
+    if (!embers.length) embers = Array.from({ length: 14 }, () => newEmber(false));
+  }
+
+  function draw(t) {
+    const dt = Math.min((t - tPrev) / 16.7, 3);
+    tPrev = t;
+    ctx.clearRect(0, 0, w, h);
+
+    for (const s of stars) {
+      s.tw += s.sp;
+      const a = 0.35 + Math.sin(s.tw) * 0.35;
+      ctx.globalAlpha = Math.max(a, 0.05);
+      ctx.fillStyle = s.warm ? "#ffbe88" : "#f2e6cf";
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (!reduce) {
+      /* shooting stars */
+      if (t - lastMeteor > 6000 + Math.random() * 9000) {
+        lastMeteor = t;
+        meteors.push({
+          x: w * (0.15 + Math.random() * 0.7),
+          y: h * Math.random() * 0.35,
+          vx: (4 + Math.random() * 3) * devicePixelRatio,
+          vy: (1.6 + Math.random() * 1.4) * devicePixelRatio,
+          life: 1
+        });
+      }
+      meteors = meteors.filter(m => m.life > 0);
+      for (const m of meteors) {
+        m.x += m.vx * dt; m.y += m.vy * dt; m.life -= 0.02 * dt;
+        ctx.globalAlpha = Math.max(m.life, 0) * 0.8;
+        ctx.strokeStyle = "#ffe6c0";
+        ctx.lineWidth = 1.4 * devicePixelRatio;
+        ctx.beginPath();
+        ctx.moveTo(m.x, m.y);
+        ctx.lineTo(m.x - m.vx * 9, m.y - m.vy * 9);
+        ctx.stroke();
+      }
+
+      /* embers drifting up */
+      for (let i = 0; i < embers.length; i++) {
+        const e = embers[i];
+        e.y -= e.vy * dt;
+        e.x += Math.sin(t * 0.0006 + e.sway) * 0.35 * devicePixelRatio * dt;
+        if (e.y < -30) embers[i] = newEmber(true);
+        const a = Math.max(0.16 + Math.sin(t * 0.002 + e.ph) * 0.12, 0.04);
+        ctx.globalAlpha = a;
+        ctx.fillStyle = "#ff9a55";
+        ctx.shadowColor = "#ff8a3d";
+        ctx.shadowBlur = 10 * devicePixelRatio;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      requestAnimationFrame(draw);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  addEventListener("resize", resize, { passive: true });
+  resize();
+  requestAnimationFrame(draw);
+}
+
+/* ============================================================
+   Paper survey maps — Moon (near side) & Mars (global)
+   Stylized hand-drawn parchment sheets with clickable pins.
+   ============================================================ */
+const MOON_SITES = [
+  { name: "Apollo 15 · LRV parked", lat: 26.13, lon: 3.63,   type: "rover", id: "lrv" },
+  { name: "Apollo 17 · LRV parked", lat: 20.19, lon: 30.77,  type: "rover", id: "lrv" },
+  { name: "Apollo 16 · LRV parked", lat: -8.97, lon: 15.50,  type: "rover", id: "lrv" },
+  { name: "Apollo 11 · Eagle + ALSEP", lat: 0.67,  lon: 23.47,  type: "other" },
+  { name: "Apollo 12 · Intrepid",      lat: -3.05, lon: -23.34, type: "other" },
+  { name: "Apollo 14 · Antares",       lat: -3.65, lon: -17.47, type: "other" },
+  { name: "Surveyor 1", lat: -2.47,  lon: -43.34, type: "other" },
+  { name: "Surveyor 7 (near Tycho)", lat: -40.86, lon: -11.44, type: "other" }
+];
+
+const MARS_SITES = [
+  { name: "Sojourner + Pathfinder",  lat: 19.13,  lon: -33.87, type: "rover", id: "sojourner" },
+  { name: "Opportunity · Endeavour rim", lat: -1.95, lon: -5.53,  type: "rover", id: "opportunity" },
+  { name: "Spirit · stuck at Troy",  lat: -14.60, lon: 175.50, type: "rover", id: "spirit", dx: -8, labelBelow: true },
+  { name: "Perseverance · still driving", lat: 18.44, lon: 77.45, type: "active" },
+  { name: "Ingenuity · grounded here", lat: 18.44, lon: 77.45, type: "rover", id: "ingenuity", dx: 17, dy: -13 },
+  { name: "Curiosity · still driving", lat: -4.59, lon: 137.44, type: "active" },
+  { name: "Viking 1",  lat: 22.27,  lon: -47.60,  type: "other" },
+  { name: "Viking 2",  lat: 47.97,  lon: 134.29,  type: "other" },
+  { name: "Phoenix",   lat: 68.23,  lon: -125.75, type: "other" },
+  { name: "InSight",   lat: 4.50,   lon: 135.62,  type: "other" }
+];
+
+/* lat/lon -> svg coords (Moon sheet: near side, lon -95..+95) */
+function llMoon(lon, lat) {
+  return [(lon + 95) / 190 * 1000, (80 - lat) / 160 * 1000];
+}
+/* lat/lon -> svg coords (Mars sheet: full globe, lat -90..+90) */
+function llMars(lon, lat) {
+  const L = ((lon + 540) % 360) - 180;
+  return [(L + 180) / 360 * 1000, (90 - lat) / 180 * 1000];
+}
+
+function pinSVG(site, proj) {
+  const [x, y] = proj(site.lon, site.lat);
+  const px = (x + (site.dx || 0)).toFixed(1);
+  const py = (y + (site.dy || 0)).toFixed(1);
+  const cls = site.type === "rover" ? "pin-rover" : site.type === "active" ? "pin-active" : "pin-other";
+  const attrs = site.id ? `data-story="${site.id}"` : (site.type === "active" ? `data-scroll="still-alive"` : "");
+  const labelGeo = site.labelBelow
+    ? `<rect x="-100" y="12" width="200" height="20" rx="4"/><text x="0" y="26" text-anchor="middle">${site.name}</text>`
+    : `<rect x="-100" y="-74" width="200" height="20" rx="4"/><text x="0" y="-60" text-anchor="middle">${site.name}</text>`;
+  return `
+    <g transform="translate(${px},${py})">
+      <g class="map-pin" ${attrs} tabindex="0" role="button" aria-label="${site.name}">
+        <path class="${cls}" d="M0,0 C-9,-12 -14,-18 -14,-25 A14,14 0 1 1 14,-25 C14,-18 9,-12 0,0 Z"/>
+        <circle cx="0" cy="-25" r="5.5" fill="#f3ead6"/>
+        <g class="pin-label">${labelGeo}</g>
+      </g>
+    </g>`;
+}
+
+function compassSVG(x, y) {
+  return `<g class="mp-compass" transform="translate(${x},${y})">
+    <circle r="34"/>
+    <path d="M0,-24 L6,0 L0,24 L-6,0 Z"/>
+    <text y="-44" text-anchor="middle">N</text>
+  </g>`;
+}
+
+/* --- Moon sheet body --- */
+const tychoRays = Array.from({ length: 10 }, (_, i) => {
+  const a = i * Math.PI / 5;
+  return `<line x1="${(441 + Math.cos(a) * 24).toFixed(1)}" y1="${(770 + Math.sin(a) * 24).toFixed(1)}"
+               x2="${(441 + Math.cos(a) * 62).toFixed(1)}" y2="${(770 + Math.sin(a) * 62).toFixed(1)}"/>`;
+}).join("");
+
+const moonBody = `
+  <g class="mp-grid">
+    ${[-60, -30, 0, 30, 60].map(l => {
+      const x = llMoon(l, 0)[0].toFixed(1);
+      return `<line x1="${x}" y1="26" x2="${x}" y2="974" ${l === 0 ? 'stroke-dasharray="6 5"' : ""}/>`;
+    }).join("")}
+    ${[60, 30, 0, -30, -60].map(la => {
+      const y = llMoon(0, la)[1].toFixed(1);
+      return `<line x1="26" y1="${y}" x2="974" y2="${y}" ${la === 0 ? 'stroke-dasharray="6 5"' : ""}/>`;
+    }).join("")}
+  </g>
+  <text class="mp-grid-label" x="34" y="494">EQUATOR</text>
+  <text class="mp-grid-label" x="12" y="129">60°N</text>
+  <text class="mp-grid-label" x="12" y="316">30°N</text>
+  <text class="mp-grid-label" x="12" y="691">30°S</text>
+  <text class="mp-grid-label" x="12" y="879">60°S</text>
+  ${[["60°W", -60], ["30°W", -30], ["0°", 0], ["30°E", 30], ["60°E", 60]].map(([t, l]) =>
+    `<text class="mp-grid-label" text-anchor="middle" x="${llMoon(l, 0)[0].toFixed(0)}" y="966">${t}</text>`).join("")}
+  <g class="mp-mare">
+    <path d="M118,425 C112,335 172,258 262,238 C332,222 385,268 395,330 C405,400 380,490 340,540 C300,585 205,610 160,565 C120,528 118,478 118,425 Z"/>
+    <ellipse cx="420" cy="168" rx="290" ry="34"/>
+    <ellipse cx="418" cy="295" rx="92" ry="72" transform="rotate(-12 418 295)"/>
+    <ellipse cx="592" cy="325" rx="52" ry="62"/>
+    <ellipse cx="655" cy="447" rx="75" ry="60" transform="rotate(12 655 447)"/>
+    <ellipse cx="809" cy="394" rx="44" ry="32"/>
+    <ellipse cx="770" cy="549" rx="42" ry="48" transform="rotate(-10 770 549)"/>
+    <ellipse cx="682" cy="595" rx="36" ry="36"/>
+    <ellipse cx="519" cy="417" rx="30" ry="26"/>
+    <ellipse cx="379" cy="563" rx="42" ry="26"/>
+    <ellipse cx="297" cy="653" rx="34" ry="31"/>
+  </g>
+  <g class="mp-mare-label">
+    <text x="250" y="462">OCEANUS</text><text x="250" y="476">PROCELLARUM</text>
+    <text x="352" y="172">MARE FRIGORIS</text>
+    <text x="378" y="299">MARE IMBRIUM</text>
+    <text x="552" y="329">MARE SERENITATIS</text>
+    <text x="608" y="451">MARE TRANQUILLITATIS</text>
+    <text x="772" y="398">MARE CRISIUM</text>
+    <text x="332" y="567">MARE COGNITUM</text>
+    <text x="258" y="657">MARE HUMORUM</text>
+    <text x="640" y="599">MARE NECTARIS</text>
+  </g>
+  <g class="mp-crater">
+    <circle cx="441" cy="770" r="18"/>
+    <g opacity="0.35">${tychoRays}</g>
+    <circle cx="395" cy="440" r="13"/>
+    <circle cx="301" cy="449" r="9"/>
+    <circle cx="250" cy="352" r="9"/>
+  </g>
+  <text class="mp-mare-label" x="441" y="814" text-anchor="middle">TYCHO</text>
+  <circle cx="905" cy="880" r="46" class="mp-stain"/>
+  <line x1="333" y1="26" x2="333" y2="974" class="mp-fold"/>
+  <line x1="667" y1="26" x2="667" y2="974" class="mp-fold"/>
+  ${compassSVG(905, 120)}
+  ${MOON_SITES.map(s => pinSVG(s, llMoon)).join("")}
+`;
+
+/* --- Mars sheet body --- */
+const marsBody = `
+  <g class="mp-grid">
+    ${[-120, -60, 0, 60, 120].map(l => {
+      const x = llMars(l, 0)[0].toFixed(1);
+      return `<line x1="${x}" y1="26" x2="${x}" y2="974" ${l === 0 ? 'stroke-dasharray="6 5"' : ""}/>`;
+    }).join("")}
+    ${[45, 0, -45].map(la => {
+      const y = llMars(0, la)[1].toFixed(1);
+      return `<line x1="26" y1="${y}" x2="974" y2="${y}" ${la === 0 ? 'stroke-dasharray="6 5"' : ""}/>`;
+    }).join("")}
+  </g>
+  <text class="mp-grid-label" x="34" y="494">EQUATOR</text>
+  <text class="mp-grid-label" x="12" y="254">45°N</text>
+  <text class="mp-grid-label" x="12" y="754">45°S</text>
+  ${[["120°W", -120], ["60°W", -60], ["0°", 0], ["60°E", 60], ["120°E", 120]].map(([t, l]) =>
+    `<text class="mp-grid-label" text-anchor="middle" x="${llMars(l, 0)[0].toFixed(0)}" y="966">${t}</text>`).join("")}
+  <g class="mp-cap">
+    <ellipse cx="500" cy="26" rx="250" ry="30"/>
+    <ellipse cx="500" cy="974" rx="260" ry="32"/>
+  </g>
+  <g class="mp-volcano">
+    <circle cx="128" cy="397" r="40" fill="none" stroke-dasharray="4 4"/>
+    <circle cx="128" cy="397" r="24"/>
+    <circle cx="128" cy="397" r="6" class="mp-caldera"/>
+    <circle cx="164" cy="550" r="13"/>
+    <circle cx="183" cy="496" r="13"/>
+    <circle cx="208" cy="439" r="13"/>
+    <circle cx="908" cy="361" r="14"/>
+  </g>
+  <path class="mp-canyon" d="M240,572 C300,590 355,602 420,585 C450,577 468,594 482,590"/>
+  <ellipse class="mp-basin" cx="696" cy="736" rx="76" ry="46"/>
+  <g class="mp-mare-label">
+    <text x="70" y="452">THARSIS</text>
+    <text x="240" y="548">VALLES MARINERIS</text>
+    <text x="620" y="800">HELLAS PLANITIA</text>
+    <text x="640" y="382">ARABIA TERRA</text>
+    <text x="420" y="462">TERRA MERIDIANI</text>
+    <text x="858" y="404">ELYSIUM</text>
+  </g>
+  <circle cx="905" cy="880" r="46" class="mp-stain"/>
+  <line x1="26" y1="333" x2="974" y2="333" class="mp-fold"/>
+  <line x1="26" y1="667" x2="974" y2="667" class="mp-fold"/>
+  ${compassSVG(905, 120)}
+  ${MARS_SITES.map(s => pinSVG(s, llMars)).join("")}
+`;
+
+/* --- Sheet shell: parchment, grain, frame, title, stamp --- */
+function mapShell(id, title, sub, stamp, body) {
+  const [l1, l2] = stamp.split("·");
+  return `<svg viewBox="0 0 1000 1000" role="img" aria-label="${title} paper survey map">
+    <defs>
+      <radialGradient id="${id}-paper" cx="50%" cy="42%" r="80%">
+        <stop offset="55%" stop-color="#efe3c8"/>
+        <stop offset="100%" stop-color="#d9c49b"/>
+      </radialGradient>
+      <filter id="${id}-grain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0.40  0 0 0 0 0.31  0 0 0 0 0.19  0 0 0 0.22 0"/>
+      </filter>
+    </defs>
+    <rect width="1000" height="1000" fill="url(#${id}-paper)"/>
+    ${body}
+    <rect width="1000" height="1000" filter="url(#${id}-grain)" pointer-events="none"/>
+    <g class="mp-frame">
+      <rect x="8" y="8" width="984" height="984" fill="none" stroke="#6e5a3e" stroke-width="3" opacity="0.65"/>
+      <rect x="20" y="20" width="960" height="960" fill="none" stroke="#6e5a3e" stroke-width="1" opacity="0.45"/>
+    </g>
+    <g transform="translate(42,64)">
+      <text class="mp-title">${title}</text>
+      <text y="26" class="mp-sub">${sub}</text>
+    </g>
+    <g transform="translate(88,900) rotate(-9)" class="mp-stamp">
+      <circle r="46"/><circle r="33"/>
+      <text y="-2" text-anchor="middle">${(l1 || "").trim()}</text>
+      <text y="14" text-anchor="middle">${(l2 || "").trim()}</text>
+    </g>
+  </svg>`;
+}
+
+function bindMapPins(container) {
+  container.addEventListener("click", e => {
+    const pin = e.target.closest(".map-pin");
+    if (!pin) return;
+    if (pin.dataset.story) openStory(pin.dataset.story);
+    else if (pin.dataset.scroll) scrollToId(pin.dataset.scroll);
+  });
+  container.addEventListener("keydown", e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (!e.target.classList || !e.target.classList.contains("map-pin")) return;
+    e.preventDefault();
+    if (e.target.dataset.story) openStory(e.target.dataset.story);
+    else if (e.target.dataset.scroll) scrollToId(e.target.dataset.scroll);
+  });
+}
+
+function buildMaps() {
+  $("#moon-map").innerHTML = mapShell("mn", "THE MOON", "NEAR SIDE · SURVEY SHEET NO.1", "FIELD SURVEY · 1971–72", moonBody);
+  $("#mars-map").innerHTML = mapShell("mr", "MARS", "GLOBAL SHEET · ROVER TRAILS", "JPL CORPS · 1997–2024", marsBody);
+  bindMapPins($("#moon-map"));
+  bindMapPins($("#mars-map"));
+}
+
+
+/* ---------------- Photos & credits ---------------- */
+const commons = n => ({
+  src: `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(n)}?width=1200`,
+  page: `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(n.replace(/ /g, "_"))}`,
+  site: "Wikimedia Commons"
+});
+const photojournal = pia => ({
+  src: `https://photojournal.jpl.nasa.gov/jpeg/${pia}.jpg`,
+  page: `https://photojournal.jpl.nasa.gov/catalog/${pia}`,
+  site: `NASA Photojournal ${pia}`
+});
+const PD = "Public domain (NASA)";
+const PHOTOS = {
+  lrv: { ...commons("Apollo 15 flag, rover, LM, Irwin.jpg"), credit: "NASA / Apollo 15 crew", license: PD,
+    alt: "The Apollo 15 Lunar Roving Vehicle parked beside the lunar module Falcon, with astronaut James Irwin saluting the flag",
+    caption: "Apollo 15's Lunar Roving Vehicle parked beside the Falcon lunar module at Hadley–Apennine, 1971." },
+  sojourner: { ...commons("Sojourner on Mars PIA01122.jpg"), credit: "NASA/JPL", license: PD,
+    alt: "The Sojourner rover on the surface of Mars beside the Pathfinder lander",
+    caption: "Sojourner at work on the surface of Mars during the Pathfinder mission, 1997." },
+  spirit: { ...photojournal("PIA03272"), credit: "NASA/JPL-Caltech/Cornell", license: PD,
+    alt: "Self-portrait of the Spirit rover with its solar panels gleaming, seen from above",
+    caption: "Spirit's self-portrait from Gusev Crater (sol 586, Aug 2005) — solar panels still gleaming two years after landing." },
+  opportunity: { ...photojournal("PIA16120"), credit: "NASA/JPL-Caltech", license: PD,
+    alt: "The shadow of the Opportunity rover stretching across the rim of Endeavour Crater",
+    caption: "Opportunity's own shadow stretching into Endeavour Crater (sol 3,051, Aug 2012) — near where it rests today." },
+  ingenuity: { ...photojournal("PIA24550"), credit: "NASA/JPL-Caltech/ASU/MSSS", license: PD,
+    alt: "The Ingenuity helicopter on the surface of Mars after its first flight, imaged by the Perseverance rover",
+    caption: "Ingenuity after its first flight on April 19, 2021, as seen by Perseverance's Mastcam-Z." },
+  curiosity: { ...commons("PIA16239 High-Resolution Self-Portrait by Curiosity Rover Arm Camera.jpg"), credit: "NASA/JPL-Caltech/MSSS", license: PD,
+    alt: "Self-portrait of the Curiosity rover on Mars made from 55 arm-camera images",
+    caption: "Curiosity's self-portrait, sol 84 (Oct 31, 2012), stitched from 55 images." },
+  perseverance: { ...photojournal("PIA24542"), credit: "NASA/JPL-Caltech/MSSS", license: PD,
+    alt: "Selfie of the Perseverance rover with the Ingenuity helicopter in Jezero Crater",
+    caption: "Perseverance's selfie with the Ingenuity helicopter, Jezero Crater, 2021." }
+};
+
+const ART = {
+
+};
+
+function photoHTML(id, extra = "") {
+  const p = PHOTOS[id];
+  if (!p) return "";
+  if (ART[id]) return `<figure class="photo ${extra}" data-id="${id}">
+    <div class="photo-frame art-frame"><img src="${ART[id]}" alt="${p.alt}"><span class="ill-note">Artwork</span></div>
+    <figcaption class="photo-cap">
+      <span class="photo-text">${p.caption}</span>
+      <span class="photo-src">🎨 Storybook artwork · Real photo: <a href="${p.page}" target="_blank" rel="noopener noreferrer">${p.site}</a> · ${p.credit}</span>
+    </figcaption>
+  </figure>`;
+  return `<figure class="photo ${extra}" data-id="${id}">
+    <div class="photo-frame"><img src="${p.src}" alt="${p.alt}"></div>
+    <figcaption class="photo-cap">
+      <span class="photo-text">${p.caption}</span>
+      <span class="photo-src">📷 ${p.credit} · Source: <a href="${p.page}" target="_blank" rel="noopener noreferrer">${p.site}</a> · ${p.license}</span>
+    </figcaption>
+  </figure>`;
+}
+
+function markPhotoLoaded(img) {
+  img.classList.add("loaded");
+  img.parentElement.classList.add("done");
+}
+function markPhotos() {
+  $$(".photo-frame img").forEach(img => {
+    if (img.complete && img.naturalWidth) { markPhotoLoaded(img); return; }
+    if (img.complete) { showIllustration(img.parentElement); return; }
+    if (img._armed) return;
+    img._armed = true;
+    /* if the photo hasn't arrived in 7 s, show the illustration so the spot is never empty */
+    setTimeout(() => {
+      if (img.isConnected && !(img.complete && img.naturalWidth)) showIllustration(img.parentElement);
+    }, 7000);
+  });
+}
+document.addEventListener("load", e => {
+  if (e.target.tagName === "IMG" && e.target.closest(".photo-frame")) markPhotoLoaded(e.target);
+}, true);
+/* Detailed inline illustration scenes: shown whenever a remote photo can't be reached */
+function illustration(id) {
+  const W = 320, H = 180;
+  const moon = id === "lrv";
+  const P = moon
+    ? { far: "#33333a", mid: "#52525a", near: "#8d8b84", near2: "#6b6963", rock: "#787671", shadow: "#38373d" }
+    : { far: "#57291a", mid: "#7a3f27", near: "#99492a", near2: "#78381f", rock: "#8a4630", shadow: "#39200f" };
+
+  /* --- sky --- */
+  let defs = `<filter id="gr-${id}"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0.35 0 0 0 0 0.27 0 0 0 0 0.16 0 0 0 0.13 0"/></filter>`;
+  let sky;
+  if (moon) {
+    defs += `<linearGradient id="sk-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04050a"/><stop offset="0.72" stop-color="#141519"/><stop offset="1" stop-color="#2e2e33"/></linearGradient>`;
+    sky = `<rect width="${W}" height="${H}" fill="url(#sk-${id})"/>`;
+    for (let i = 0; i < 42; i++) sky += `<circle cx="${(i * 83) % W}" cy="${(i * 41) % 96}" r="${0.4 + (i % 3) * 0.35}" fill="#e8e6df" opacity="${(0.25 + ((i * 7) % 50) / 100).toFixed(2)}"/>`;
+    sky += `<circle cx="250" cy="33" r="11" fill="#7ea4d8"/><path d="M246,29 a9,9 0 0 0 6,9 a11,11 0 0 1 -6,-9 z" fill="#d6e5f5" opacity="0.9"/>`;
+    sky += `<circle cx="72" cy="24" r="1.6" fill="#ffe3b0"/><circle cx="72" cy="24" r="3.4" fill="#ffe3b0" opacity="0.25"/>`;
+  } else {
+    defs += `<linearGradient id="sk-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#200f08"/><stop offset="0.42" stop-color="#7e4326"/><stop offset="0.72" stop-color="#c47a45"/><stop offset="1" stop-color="#e5a366"/></linearGradient>`;
+    sky = `<rect width="${W}" height="${H}" fill="url(#sk-${id})"/>`;
+    sky += `<circle cx="240" cy="97" r="42" fill="#ffdfae" opacity="0.16"/><circle cx="240" cy="97" r="20" fill="#ffe9c4" opacity="0.5"/><circle cx="240" cy="97" r="10" fill="#fff3dc"/>`;
+    for (let i = 0; i < 12; i++) sky += `<circle cx="${(i * 137) % W}" cy="${(i * 23) % 50}" r="0.6" fill="#ffe9c4" opacity="0.4"/>`;
+    sky += `<rect y="94" width="${W}" height="24" fill="#eab184" opacity="0.16"/>`;
+  }
+
+  /* --- terrain: three layered ridges + crater + rocks --- */
+  const terrain = `
+    <path d="M0,${H - 64} L36,${H - 72} L74,${H - 60} L128,${H - 74} L172,${H - 63} L226,${H - 71} L272,${H - 62} L${W},${H - 68} L${W},${H - 30} L0,${H - 30} Z" fill="${P.far}"/>
+    <path d="M0,${H - 44} L48,${H - 52} L104,${H - 42} L166,${H - 54} L228,${H - 43} L286,${H - 50} L${W},${H - 45} L${W},${H - 14} L0,${H - 14} Z" fill="${P.mid}"/>
+    <path d="M0,${H - 22} Q80,${H - 29} 160,${H - 23} T${W},${H - 26} L${W},${H} L0,${H} Z" fill="${P.near}"/>
+    <ellipse cx="56" cy="${H - 11}" rx="30" ry="8" fill="${P.near2}"/>
+    <ellipse cx="56" cy="${H - 12}" rx="22" ry="5.4" fill="${P.shadow}" opacity="0.55"/>
+    <ellipse cx="56" cy="${H - 13.5}" rx="12" ry="3" fill="${P.rock}" opacity="0.8"/>
+    <ellipse cx="262" cy="${H - 7}" rx="24" ry="6.4" fill="${P.near2}"/>
+    <ellipse cx="262" cy="${H - 8}" rx="17" ry="4.2" fill="${P.shadow}" opacity="0.5"/>
+    <ellipse cx="176" cy="${H - 9}" rx="7" ry="3" fill="${P.rock}"/><ellipse cx="179" cy="${H - 10}" rx="3" ry="1.4" fill="#c9916b" opacity="0.5"/>
+    <ellipse cx="104" cy="${H - 6}" rx="5" ry="2.4" fill="${P.rock}"/>`;
+
+  /* --- wheel with tread + spokes --- */
+  const wheel = (x, y, r) => `
+    <ellipse cx="${x}" cy="${y + r * 0.9}" rx="${r * 1.15}" ry="${r * 0.34}" fill="${P.shadow}" opacity="0.6"/>
+    <circle cx="${x}" cy="${y}" r="${r}" fill="#15151a" stroke="#9d9a94" stroke-width="1.4"/>
+    <circle cx="${x}" cy="${y}" r="${r * 0.55}" fill="#26262c" stroke="#6d6b66" stroke-width="0.8"/>
+    <circle cx="${x}" cy="${y}" r="${r * 0.22}" fill="#8f8d86"/>
+    ${[0, 60, 120].map(a => `<line x1="${x - Math.cos(a * Math.PI / 180) * r * 0.95}" y1="${y - Math.sin(a * Math.PI / 180) * r * 0.95}" x2="${x + Math.cos(a * Math.PI / 180) * r * 0.95}" y2="${y + Math.sin(a * Math.PI / 180) * r * 0.95}" stroke="#4a4a50" stroke-width="0.7"/>`).join("")}`;
+
+  /* --- per-rover builds --- */
+  let rover = "";
+  if (id === "lrv") {
+    /* lander behind */
+    rover += `<g opacity="0.92">
+      <polygon points="228,${H - 78} 288,${H - 78} 296,${H - 40} 220,${H - 40}" fill="#c9a24a" stroke="#8a6a28" stroke-width="1.2"/>
+      <polygon points="228,${H - 78} 288,${H - 78} 284,${H - 70} 233,${H - 70}" fill="#e5c468" opacity="0.9"/>
+      <path d="M226,${H - 78} L290,${H - 78} L276,${H - 96} L238,${H - 96} Z" fill="#b8903c" stroke="#8a6a28"/>
+      ${wheel(232, H - 34, 6)}${wheel(284, H - 34, 6)}</g>`;
+    /* rover */
+    rover += `<g transform="translate(108,${H - 34})">
+      <ellipse cx="0" cy="15" rx="66" ry="7" fill="${P.shadow}" opacity="0.55"/>
+      <path d="M-52,-4 L52,-4 L48,-14 L-48,-14 Z" fill="#b9b4a6" stroke="#7d7a72" stroke-width="1"/>
+      <rect x="-30" y="-24" width="13" height="10" rx="2" fill="#8f8b80" stroke="#6a675f"/>
+      <rect x="12" y="-24" width="13" height="10" rx="2" fill="#8f8b80" stroke="#6a675f"/>
+      <rect x="-8" y="-30" width="16" height="16" rx="2" fill="#4a4638" stroke="#2e2c24"/>
+      <line x1="34" y1="-6" x2="44" y2="-44" stroke="#a5a196" stroke-width="2.4"/>
+      <path d="M36,-52 q17,0 17,16 q-17,0 -17,-16 z" fill="#ded9ca" stroke="#8f8c84" stroke-width="1"/>
+      <line x1="44" y1="-44" x2="44" y2="-36" stroke="#a5a196" stroke-width="1.6"/>
+      <line x1="-20" y1="-30" x2="-30" y2="-52" stroke="#a5a196" stroke-width="1.4"/><circle cx="-30" cy="-53" r="2.4" fill="#c9c4b4"/>
+      <line x1="-46" y1="-4" x2="-14" y2="-4" stroke="#8f8c84" stroke-width="1"/><line x1="46" y1="-4" x2="14" y2="-4" stroke="#8f8c84" stroke-width="1"/>
+      ${wheel(-48, 3, 13)}${wheel(0, 3, 13)}${wheel(48, 3, 13)}</g>`;
+  } else if (id === "ingenuity") {
+    rover += `<g transform="translate(150,${H - 44})">
+      <ellipse cx="2" cy="40" rx="40" ry="6" fill="${P.shadow}" opacity="0.5"/>
+      <line x1="-40" y1="-26" x2="40" y2="-26" stroke="#20242e" stroke-width="2.6" opacity="0.9"/>
+      <line x1="-34" y1="-18" x2="34" y2="-18" stroke="#20242e" stroke-width="2.6" opacity="0.9"/>
+      <line x1="0" y1="-18" x2="0" y2="-4" stroke="#c9c4b4" stroke-width="3"/>
+      <rect x="-34" y="-34" width="68" height="10" rx="3" fill="#20345c" stroke="#7d93c4" stroke-width="1.2"/>
+      <rect x="-13" y="-4" width="26" height="26" rx="3" fill="#d8d2c4" stroke="#8f8c84"/>
+      <rect x="-6" y="2" width="12" height="9" fill="#2e2c28"/><rect x="-15" y="-1" width="30" height="5" rx="2" fill="#c9c4b4" stroke="#8f8c84" stroke-width="0.8"/>
+      <g stroke="#d8d2c4" stroke-width="2.4"><line x1="-9" y1="22" x2="-26" y2="42"/><line x1="9" y1="22" x2="26" y2="42"/><line x1="0" y1="22" x2="-5" y2="44"/><line x1="0" y1="22" x2="5" y2="44"/></g>
+      <path d="M58,40 l30,-4" stroke="#c9c4b4" stroke-width="2.6" stroke-linecap="round"/>
+      <g opacity="0.35"><line x1="-58" y1="-40" x2="-14" y2="-40" stroke="#f4e6c8" stroke-width="2"/><line x1="14" y1="-40" x2="58" y2="-40" stroke="#f4e6c8" stroke-width="2"/></g></g>`;
+  } else {
+    const k = id === "sojourner" ? 0.6 : (id === "curiosity" || id === "perseverance") ? 1.12 : 1;
+    const flat = id === "spirit" || id === "opportunity";
+    rover += `<g transform="translate(150,${H - 36}) scale(${k})">
+      <ellipse cx="0" cy="13" rx="64" ry="7" fill="${P.shadow}" opacity="0.55"/>
+      ${flat ? `<polygon points="-50,-32 50,-32 60,-22 -60,-22" fill="#20345c" stroke="#7d93c4" stroke-width="1.2"/>
+        ${[-30, 0, 30].map(x => `<line x1="${x}" y1="-31" x2="${x + 6}" y2="-23" stroke="#7d93c4" stroke-width="0.7" opacity="0.8"/>`).join("")}
+        <rect x="-44" y="-32" width="88" height="10" rx="3" fill="#cfc7b4" stroke="#8f8c84"/>` : ""}
+      <rect x="-42" y="-30" width="84" height="20" rx="4" fill="${flat ? "#c9c1b0" : "#d8d2c4"}" stroke="#8f8c84" stroke-width="1.2"/>
+      ${id === "sojourner" ? `<polygon points="-42,-30 42,-30 36,-44 -36,-44" fill="#20345c" stroke="#7d93c4" stroke-width="1"/>` : ""}
+      ${id === "curiosity" || id === "perseverance" ? `<rect x="46" y="-26" width="14" height="9" rx="2" fill="#5a5648" stroke="#3a382e" transform="rotate(18 46,-26)"/>` : ""}
+      <line x1="26" y1="-30" x2="26" y2="-62" stroke="#b9b4a6" stroke-width="3"/>
+      <rect x="16" y="-72" width="20" height="11" rx="2.5" fill="#2b2b30" stroke="#8f8c84" stroke-width="1"/>
+      <circle cx="22" cy="-66.5" r="2.4" fill="#9fb8d8"/><circle cx="30" cy="-66.5" r="2.4" fill="#9fb8d8"/>
+      ${id === "curiosity" || id === "perseverance" ? `<path d="M-42,-16 L-60,-8 L-70,4" fill="none" stroke="#b9b4a6" stroke-width="4" stroke-linecap="round"/><rect x="-76" y="0" width="9" height="6" rx="1.5" fill="#4a4638"/>` : ""}
+      <path d="M-34,-10 L-34,2 M0,-10 L0,2 M34,-10 L34,2" stroke="#9d9a94" stroke-width="2.6"/>
+      ${wheel(-36, 5, 11)}${wheel(0, 5, 11)}${wheel(36, 5, 11)}</g>`;
+  }
+
+  /* --- dust motes + grain --- */
+  let dust = "";
+  if (!moon) for (let i = 0; i < 16; i++) dust += `<circle cx="${(i * 71 + 13) % W}" cy="${H - 60 + ((i * 37) % 52)}" r="${0.7 + (i % 3) * 0.5}" fill="#e8b183" opacity="${0.08 + (i % 4) * 0.05}"/>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Detailed illustration of ${id}" style="width:100%;height:100%;display:block">
+    <defs>${defs}</defs>
+    ${sky}${terrain}${rover}${dust}
+    <rect width="${W}" height="${H}" filter="url(#gr-${id})" opacity="0.8" style="pointer-events:none"/>
+  </svg>`;
+}
+function showIllustration(frame) {
+  const fig = frame.closest(".photo");
+  if (!fig || frame.dataset.ill) return;
+  frame.dataset.ill = "1";
+  frame.classList.add("done");
+  frame.innerHTML = illustration(fig.dataset.id) + `<span class="ill-note">Illustration</span>`;
+  const src = fig.querySelector(".photo-src");
+  if (src) src.insertAdjacentHTML("beforeend", " · <em>illustration shown — open the source link for the real photo</em>");
+}
+document.addEventListener("error", e => {
+  if (e.target.tagName !== "IMG" || !e.target.closest(".photo-frame")) return;
+  showIllustration(e.target.parentElement);
+}, true);
+
+function buildAlivePhotos() {
+  $$(".photo-slot").forEach(slot => { slot.innerHTML = photoHTML(slot.dataset.photo); });
+}
+
+/* ---------------- Card turn ---------------- */
+function turnCard(card) {
+  card.classList.remove("turning");
+  void card.offsetWidth;
+  card.classList.add("turning");
+  card.classList.toggle("flipped");
+  clearTimeout(card._t);
+  card._t = setTimeout(() => card.classList.remove("turning"), 1350);
+}
+
+/* ---------------- Smooth scrolling ---------------- */
+const navOffset = () => ($(".nav") ? $(".nav").offsetHeight : 60);
+let scrollAnim = 0;
+function smoothScrollToY(target, dur) {
+  cancelAnimationFrame(scrollAnim);
+  const start = scrollY, delta = target - start, t0 = performance.now();
+  const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const step = now => {
+    const p = Math.min((now - t0) / dur, 1);
+    window.scrollTo(0, start + delta * ease(p));
+    if (p < 1) scrollAnim = requestAnimationFrame(step);
+  };
+  scrollAnim = requestAnimationFrame(step);
+}
+function scrollToId(id) {
+  const el = id === "top" ? null : document.getElementById(id);
+  const y = el ? Math.max(0, el.getBoundingClientRect().top + scrollY - navOffset() + 1) : 0;
+  const dist = Math.abs(y - scrollY);
+  smoothScrollToY(y, Math.min(1800, Math.max(800, dist * 0.6)));
+}
+function scrollInit() {
+  ["wheel", "touchstart", "keydown"].forEach(ev =>
+    addEventListener(ev, () => cancelAnimationFrame(scrollAnim), { passive: true }));
+  document.addEventListener("click", e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = a.getAttribute("href").slice(1);
+    if (!id) return;
+    e.preventDefault();
+    scrollToId(id);
+    try { history.replaceState(null, "", "#" + id); } catch (_) {}
+  });
+}
+
+/* ---------------- Nav: progress bar + active link ---------------- */
+function navEffects() {
+  const bar = $("#progress"), nav = $(".nav");
+  const links = $$(".nav-links a");
+  const secs = links.map(a => document.getElementById(a.getAttribute("href").slice(1)));
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? Math.min(scrollY / max, 1) : 0})`;
+    nav.classList.toggle("scrolled", scrollY > 20);
+    const probe = scrollY + navOffset() + Math.min(240, innerHeight * 0.3);
+    let cur = -1;
+    secs.forEach((sec, i) => { if (sec && sec.offsetTop <= probe) cur = i; });
+    links.forEach((a, i) => a.classList.toggle("active", i === cur));
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener("resize", update);
+  update();
+}
+
+/* ---------------- Click ripples ---------------- */
+function rippleInit() {
+  document.addEventListener("pointerdown", e => {
+    const host = e.target.closest(".hero-cta, .nav-links a, .tl-item, .card-open, .modal-close");
+    if (!host) return;
+    const r = host.getBoundingClientRect();
+    const d = Math.max(r.width, r.height) * 2;
+    const span = document.createElement("span");
+    span.className = "ripple";
+    span.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left - d / 2}px;top:${e.clientY - r.top - d / 2}px`;
+    host.appendChild(span);
+    setTimeout(() => span.remove(), 750);
+  });
+}
+
+/* ---------------- Init ---------------- */
+buildTimeline();
+buildCards();
+buildAlivePhotos();
+markPhotos();
+scrollInit();
+navEffects();
+rippleInit();
+buildResting();
+buildMaps();
+buildSilence();
+revealObserver();
+animateCounters();
+starfield();
+
+</script>
+</body>
+</html>
